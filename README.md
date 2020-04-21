@@ -1,4 +1,11 @@
-# SwaggerBake plugin for CakePHP4
+# SwaggerBake plugin for CakePHP3
+
+```
+NOTE! This is an experimental branch. I ported the code originally built for CakePHP4 down to CakePHP 3.8. It passes 
+unit tests, but I had to remove one of the tests. Exceptions being converted to response codes may not work. The entire 
+library might not actually work, but it does pass unit tests. Give it a try and let me know. I won't support this but 
+I will accept PRs.
+```
 
 A delightfully tasty tool for generating Swagger documentation with OpenApi 3.0.0 schema. This plugin automatically 
 builds your Swagger UI (v3.25) from your existing cake models and routes. A redoc option is also available.
@@ -14,7 +21,7 @@ builds your Swagger UI (v3.25) from your existing cake models and routes. A redo
 
 ## Installation
 
-SwaggerBake requires CakePHP4 and a few dependencies that will be automatically installed via composer.
+SwaggerBake requires CakePHP3 and a few dependencies that will be automatically installed via composer.
 
 ```
 composer require cnizzardini/cakephp-swagger-bake
@@ -309,7 +316,7 @@ This is built for CakePHP 4.x only.
 
 | Version | Cake Version  | Supported | Unit Tests | Notes | 
 | ------------- | ------------- | ------------- | ------------- | ------------- | 
-| 1.* | 4.0.* | Yes  | Yes | Currently supported | 
+| cake-3.8 | 3.8.* | No  | Yes | See notes at top of this README | 
 
 ## Common Issues
 
