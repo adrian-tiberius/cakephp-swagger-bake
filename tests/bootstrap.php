@@ -1,43 +1,46 @@
 <?php
-declare(strict_types=1);
 
-/**
- * Test suite bootstrap for SwaggerBake.
- *
- * This function is used to find the location of CakePHP whether CakePHP
- * has been installed as a dependency of the plugin, or the plugin is itself
- * installed as a dependency of an application.
- */
-$findRoot = function ($root) {
-    do {
-        $lastRoot = $root;
-        $root = dirname($root);
-        if (is_dir($root . '/vendor/cakephp/cakephp')) {
-            return $root;
-        }
-    } while ($root !== $lastRoot);
+use Cake\Cache\Cache;
+use Cake\Core\Configure;
+use Cake\Core\Plugin;
+use Cake\Datasource\ConnectionManager;
+use Cake\Log\Log;
+use Cake\Routing\DispatcherFactory;
 
-    throw new Exception("Cannot find the root of the application, unable to run tests");
-};
-$root = $findRoot(__FILE__);
-unset($findRoot);
+require_once 'vendor/autoload.php';
 
-chdir($root);
-
-require_once $root . '/vendor/autoload.php';
-
-define('SWAGGER_BAKE_TEST_ROOT', dirname(__DIR__));
+define('ROOT', dirname(__DIR__));
+define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'vendor' . DS . 'cakephp' . DS . 'cakephp');
+define('CORE_PATH', ROOT . DS . 'vendor' . DS . 'cakephp' . DS . 'cakephp' . DS);
+define('CAKE', CORE_PATH . 'src' . DS);
+define('SWAGGER_BAKE_TEST_ROOT', ROOT);
 define('SWAGGER_BAKE_TEST_APP', SWAGGER_BAKE_TEST_ROOT . DS . 'tests' . DS . 'test_app');
+define('APP_DIR', 'test_app');
+define('APP', SWAGGER_BAKE_TEST_APP . DS);
+define('WEBROOT_DIR', 'webroot');
+define('WWW_ROOT', APP . 'webroot' . DS);
+define('TMP', sys_get_temp_dir() . DS);
+define('CONFIG', APP . 'config' . DS);
+define('CACHE', TMP);
+define('LOGS', TMP);
 
 /**
  * Define fallback values for required constants and configuration.
  * To customize constants and configuration remove this require
  * and define the data required by your plugin here.
  */
-require_once $root . '/vendor/cakephp/cakephp/tests/bootstrap.php';
+require_once CORE_PATH . 'config/bootstrap.php';
 
-if (file_exists($root . '/config/bootstrap.php')) {
-    require $root . '/config/bootstrap.php';
-
-    return;
+// Ensure default test connection is defined
+if (!getenv('db_dsn')) {
+    putenv('db_dsn=sqlite://127.0.0.1/' . TMP . 'debug_kit_test.sqlite');
 }
+
+$config = [
+    'url' => getenv('db_dsn'),
+    'timezone' => 'UTC',
+];
+
+// Use the test connection for 'debug_kit' as well.
+ConnectionManager::setConfig('test', $config);
+ConnectionManager::setConfig('test_debug_kit', $config);
